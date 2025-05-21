@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>'PTUK' International Partnerships Dashboard / RADZID-2025</title>
+    <style>
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #E74C3C;
+            --accent-color: #3498DB;
+            --light-color: #F5F7FA;
+            --dark-color: #2C3E50;
+            --success-color: #27AE60;
+            --warning-color: #F39C12;
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-main);
+            line-height: 1.6;
+            color: var(--dark-color);
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo {
+            height: 80px;
+            margin-right: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .dashboard-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .search-box, .filter-dropdown {
+            padding: 0.75rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .search-box {
+            min-width: 300px;
+        }
+        
+        .filter-dropdown {
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .view-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .dashboard-content {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            width: 300px;
+            flex-shrink: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+        }
+        
+        .category-list {
+            list-style: none;
+        }
+        
+        .category-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .category-item:hover {
+            background-color: var(--light-color);
+        }
+        
+        .category-item.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .category-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            padding: 4px;
+        }
+        
+        .category-details {
+            display: none;
+        }
+        
+        .category-details.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .category-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .category-title {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .subtypes-section, .frameworks-section, .kpis-section, .case-studies-section, .vision-section {
+            margin-bottom: 2rem;
+        }
+        
+        h3 {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .subtype-item, .framework-item, .kpi-item, .case-study-item {
+            background-color: var(--light-color);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+        
+        .subtype-title, .framework-title, .kpi-title, .case-study-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .example {
+            font-style: italic;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+        
+        .example strong {
+            color: var(--dark-color);
+        }
+        
+        .kpi-metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .kpi-metric {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+        
+        .kpi-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .vision-text {
+            background-color: rgba(52, 152, 219, 0.1);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+        
+        .stat-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+        }
+        
+        .map-container {
+            height: 400px;
+            background-color: #eee;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .map-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark-color);
+            font-size: 1.2rem;
+        }
+        
+        .partners-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2rem;
+        }
+        
+        .partners-table th, .partners-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .partners-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .partners-table tr:hover {
+            background-color: var(--light-color);
+        }
+        
+        .partner-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background-color: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-pending {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-expired {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--secondary-color);
+        }
+        
+        .view-all {
+            text-align: right;
+            margin-top: -1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .view-all a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .view-all a:hover {
+            text-decoration: underline;
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        .copyright {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 1200px) {
+            .dashboard-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-controls {
+                flex-direction: column;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                min-width: 100%;
+            }
+            
+            .view-toggle {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="https://via.placeholder.com/80x80?text='PTUK'" alt="'PTUK' Logo" class="logo">
+            <div>
+                <h1>DRAFT International Partnerships Dashboard / RADZID-2025</h1>
+                <p class="subtitle">Strategic Collaborations for Global Engagement</p>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="dashboard-controls">
+            <div class="search-filter">
+                <input type="text" class="search-box" placeholder="Search partnerships...">
+                <select class="filter-dropdown">
+                    <option>All Regions</option>
+                    <option>Europe</option>
+                    <option>North America</option>
+                    <option>Asia</option>
+                    <option>Africa</option>
+                    <option>Middle East</option>
+                    <option>Latin America</option>
+                    <option>Oceania</option>
+                </select>
+                <select class="filter-dropdown">
+                    <option>All Types</option>
+                    <option>Academic</option>
+                    <option>Research</option>
+                    <option>Institutional</option>
+                    <option>Student Mobility</option>
+                    <option>Faculty Exchange</option>
+                </select>
+            </div>
+            <div class="view-toggle">
+                <button class="view-btn active">Dashboard View</button>
+                <button class="view-btn">List View</button>
+                <button class="view-btn">Map View</button>
+            </div>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🌐</div>
+                <div class="stat-value">27</div>
+                <div class="stat-label">Partnership Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤝</div>
+                <div class="stat-value">156</div>
+                <div class="stat-label">Active Partnerships</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎓</div>
+                <div class="stat-value">42</div>
+                <div class="stat-label">Joint/Dual Degrees</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✈️</div>
+                <div class="stat-value">78</div>
+                <div class="stat-label">Mobility Programs</div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <div class="sidebar">
+                <h2>Partnership Categories</h2>
+                <ul class="category-list" id="categoryList">
+                    <!-- Categories will be populated by JavaScript -->
+                </ul>
+            </div>
+            
+            <div class="main-content">
+                <div id="dashboardOverview" class="category-details active">
+                    <h2 class="category-title">Global Partnerships Overview</h2>
+                    <p class="category-description">Explore 'PTUK''s diverse international collaborations across 27 strategic categories that enhance academic excellence, research innovation, and global impact.</p>
+                    
+                    <div class="map-container">
+                        <div class="map-placeholder">
+                            Interactive World Map Visualization of Partnerships
+                        </div>
+                    </div>
+                    
+                    <h3>Recent Activities</h3>
+                    <table class="partners-table">
+                        <thead>
+                            <tr>
+                                <th>Partner Institution</th>
+                                <th>Type</th>
+                                <th>Region</th>
+                                <th>Date Signed</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>University of Technology Sydney</td>
+                                <td>Research Collaboration</td>
+                                <td>Oceania</td>
+                                <td>2023-10-15</td>
+                                <td><span class="partner-status status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>University of Barcelona</td>
+                                <td>Student Exchange</td>
+                                <td>Europe</td>
+                                <td>2023-09-28</td>
+                                <td><span class="partner-status status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>National University of Singapore</td>
+                                <td>Joint Degree Program</td>
+                                <td>Asia</td>
+                                <td>2023-08-10</td>
+                                <td><span class="partner-status status-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                                <td>University of Cape Town</td>
+                                <td>Faculty Exchange</td>
+                                <td>Africa</td>
+                                <td>2023-07-22</td>
+                                <td><span class="partner-status status-active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>University of São Paulo</td>
+                                <td>Research Network</td>
+                                <td>Latin America</td>
+                                <td>2023-06-05</td>
+                                <td><span class="partner-status status-active">Active</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="view-all">
+                        <a href="#">View All Partnerships →</a>
+                    </div>
+                </div>
+                
+                <!-- Category details will be populated by JavaScript -->
+                <div id="categoryDetailsContainer"></div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-links">
+            <a href="#">About 'PTUK'</a>
+            <a href="#">International Relations Office</a>
+            <a href="#">Global Engagement Strategy</a>
+            <a href="#">Contact</a>
+        </div>
+        <p class="copyright">© 2025 'PTUK' International Relations Office. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Partnership categories data
+        const partnershipCategories = [
+            {
+                id: 1,
+                title: "Academic Program Partnerships",
+                description: "These collaborations primarily focus on developing, delivering, and enhancing academic programs across institutions (e.g., academic exchanges, joint degrees, curriculum co-creation).",
+                subtypes: [
+                    {
+                        title: "Joint Degree Programs",
+                        description: "A single integrated program leading to degrees awarded by multiple institutions.",
+                        example: "E.g., Maastricht University & United Nations University – Joint MSc in Public Policy"
+                    },
+                    {
+                        title: "Dual/Double Degree Programs",
+                        description: "Students earn two degrees by studying at partner institutions.",
+                        example: "E.g., Columbia University & Sciences Po – Dual MA/MSc Program"
+                    },
+                    {
+                        title: "Franchise Programs",
+                        description: "A university allows a partner to deliver its programs locally under its brand.",
+                        example: "E.g., UK universities franchising programs in Malaysia and Singapore"
+                    },
+                    {
+                        title: "Validation Partnerships",
+                        description: "One institution validates programs designed and delivered by another.",
+                        example: "E.g., University of Wales validating programs in international colleges"
+                    },
+                    {
+                        title: "Articulation Agreements",
+                        description: "Ensure smooth transfer of credits between partner institutions.",
+                        example: "E.g., 2+2 or 3+1 pathways between US community colleges and Chinese universities"
+                    }
+                ],
+                frameworks: [
+                    "UN SDG 4 – Quality Education",
+                    "Bologna Process – For EHEA institutions",
+                    "UNESCO Global Recognition Convention",
+                    "Erasmus+ KA1 and KA2 – Joint degrees, mobility",
+                    "African Union Arusha Convention – Harmonization of higher education in Africa"
+                ],
+                kpis: [
+                    {
+                        name: "Number of joint/dual degree programs established",
+                        value: "12",
+                        trend: "up"
+                    },
+                    {
+                        name: "Annual student enrollment in joint programs",
+                        value: "245",
+                        trend: "up"
+                    },
+                    {
+                        name: "Graduation/employment rates from joint programs",
+                        value: "92%",
+                        trend: "steady"
+                    },
+                    {
+                        name: "Number of articulation agreements signed",
+                        value: "18",
+                        trend: "up"
+                    },
+                    {
+                        name: "Recognition of 'PTUK' programs by international accrediting agencies",
+                        value: "7",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "University of Glasgow & University of Hong Kong – Joint MSc in International Finance",
+                    "Erasmus Mundus Joint Master Degrees – Pan-European multi-country master's programs"
+                ],
+                vision: "'PTUK' plans to launch a Joint BA in Digital Media with a European university by 2026, enhancing interdisciplinary learning and international credentials."
+            },
+            {
+                id: 2,
+                title: "Student Mobility Partnerships",
+                description: "Exchange programs that enable students to study abroad for a semester or year while earning credits toward their degree.",
+                subtypes: [
+                    {
+                        title: "Bilateral Exchange",
+                        description: "Direct exchange agreements between two institutions.",
+                        example: "E.g., 'PTUK'-University of Vienna student exchange program"
+                    },
+                    {
+                        title: "Multilateral Exchange",
+                        description: "Exchange within a network of multiple universities.",
+                        example: "E.g., ISEP (International Student Exchange Programs)"
+                    },
+                    {
+                        title: "Short-term Mobility",
+                        description: "Summer/winter schools, intensive programs.",
+                        example: "E.g., CIVIS European University short-term courses"
+                    }
+                ],
+                frameworks: [
+                    "Erasmus+ Program",
+                    "ASEAN International Mobility for Students (AIMS)",
+                    "Campus Asia Program"
+                ],
+                kpis: [
+                    {
+                        name: "Number of outgoing students per year",
+                        value: "185",
+                        trend: "up"
+                    },
+                    {
+                        name: "Number of incoming students per year",
+                        value: "97",
+                        trend: "up"
+                    },
+                    {
+                        name: "Partner institutions offering mobility",
+                        value: "63",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "Erasmus+ Credit Mobility between 'PTUK' and University of Barcelona",
+                    "ASEAN AIMS program with Chulalongkorn University"
+                ],
+                vision: "'PTUK' aims to establish reciprocal mobility agreements with all top 200 universities by 2030."
+            },
+            {
+                id: 3,
+                title: "Faculty Exchange Partnerships",
+                description: "Programs that enable teaching staff to spend time at partner institutions to teach, conduct research, or share expertise.",
+                subtypes: [
+                    {
+                        title: "Visiting Professorships",
+                        description: "Faculty members teach at partner institutions for a semester or year.",
+                        example: "E.g., Fulbright Scholar Program"
+                    },
+                    {
+                        title: "Guest Lectureships",
+                        description: "Short-term teaching engagements.",
+                        example: "E.g., Erasmus+ Teaching Assignments"
+                    },
+                    {
+                        title: "Shadowing Programs",
+                        description: "Faculty observe and learn from colleagues at partner institutions.",
+                        example: "E.g., 'PTUK'-Tsinghua University Faculty Shadowing Program"
+                    }
+                ],
+                frameworks: [
+                    "Fulbright Program",
+                    "Erasmus+ Staff Mobility",
+                    "Association of Commonwealth Universities Fellowships"
+                ],
+                kpis: [
+                    {
+                        name: "Number of outgoing faculty per year",
+                        value: "42",
+                        trend: "steady"
+                    },
+                    {
+                        name: "Number of incoming faculty per year",
+                        value: "28",
+                        trend: "up"
+                    },
+                    {
+                        name: "Courses developed through exchanges",
+                        value: "15",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-ETH Zurich Faculty Exchange in Engineering",
+                    "Fulbright Specialist Program with University of Michigan"
+                ],
+                vision: "'PTUK' will implement a 'Global Faculty' initiative to have 30% of faculty with international exchange experience by 2025."
+            },
+            {
+                id: 4,
+                title: "Research Collaboration Partnerships",
+                description: "Joint research projects, shared facilities, and co-publication opportunities between institutions.",
+                subtypes: [
+                    {
+                        title: "Joint Research Projects",
+                        description: "Collaborative research with shared funding and resources.",
+                        example: "E.g., Horizon Europe collaborative projects"
+                    },
+                    {
+                        title: "Research Networks",
+                        description: "Consortia of institutions working on common research themes.",
+                        example: "E.g., LERU (League of European Research Universities)"
+                    },
+                    {
+                        title: "Shared Facilities",
+                        description: "Access to specialized equipment or labs at partner institutions.",
+                        example: "E.g., CERN partner institutions"
+                    }
+                ],
+                frameworks: [
+                    "Horizon Europe Program",
+                    "UN Sustainable Development Goals",
+                    "African Research Universities Alliance"
+                ],
+                kpis: [
+                    {
+                        name: "Number of joint publications",
+                        value: "87",
+                        trend: "up"
+                    },
+                    {
+                        name: "Joint research grants secured",
+                        value: "€3.2M",
+                        trend: "up"
+                    },
+                    {
+                        name: "Patents filed collaboratively",
+                        value: "5",
+                        trend: "steady"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Max Planck Institute Joint Research in Quantum Computing",
+                    "EU Horizon Marie Curie Actions with KU Leuven"
+                ],
+                vision: "'PTUK' will establish 5 new international research hubs by 2027 focusing on climate change, AI, and public health."
+            },
+            {
+                id: 5,
+                title: "International Internship Partnerships",
+                description: "Collaborations with organizations worldwide to provide students with global work experience.",
+                subtypes: [
+                    {
+                        title: "Corporate Internships",
+                        description: "Placements with multinational companies.",
+                        example: "E.g., 'PTUK' students at Siemens Global Internship Program"
+                    },
+                    {
+                        title: "NGO/IO Placements",
+                        description: "Internships with international organizations.",
+                        example: "E.g., UN internship program for 'PTUK' students"
+                    },
+                    {
+                        title: "Research Internships",
+                        description: "Placements at international research institutions.",
+                        example: "E.g., 'PTUK'-MIT Summer Research Program"
+                    }
+                ],
+                frameworks: [
+                    "IAESTE (International Association for the Exchange of Students for Technical Experience)",
+                    "AIESEC Global Internship Program",
+                    "Erasmus+ Traineeships"
+                ],
+                kpis: [
+                    {
+                        name: "Number of internship partners",
+                        value: "39",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students placed annually",
+                        value: "76",
+                        trend: "up"
+                    },
+                    {
+                        name: "Countries offering internships",
+                        value: "22",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Google Global Internship Pipeline",
+                    "World Bank Summer Internship Program for 'PTUK' Economics Students"
+                ],
+                vision: "'PTUK' aims to provide international internship opportunities to 20% of all undergraduate students by 2028."
+            },
+            {
+                id: 6,
+                title: "Virtual Exchange Partnerships",
+                description: "Collaborative Online International Learning (COIL) initiatives that connect classrooms across borders.",
+                subtypes: [
+                    {
+                        title: "COIL Courses",
+                        description: "Joint online courses with international partners.",
+                        example: "E.g., 'PTUK'-Keio University Virtual Exchange in Digital Humanities"
+                    },
+                    {
+                        title: "Global Classrooms",
+                        description: "Shared virtual learning spaces for multiple institutions.",
+                        example: "E.g., SUNY COIL Center initiatives"
+                    },
+                    {
+                        title: "Online Joint Seminars",
+                        description: "Faculty and students collaborate on specific topics virtually.",
+                        example: "E.g., Global Health Virtual Seminar Series"
+                    }
+                ],
+                frameworks: [
+                    "UNESCO OER Recommendation",
+                    "European Universities Initiative - Digital Dimension",
+                    "APEC Virtual Exchange Initiative"
+                ],
+                kpis: [
+                    {
+                        name: "Number of COIL courses offered",
+                        value: "14",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students participating annually",
+                        value: "320",
+                        trend: "up"
+                    },
+                    {
+                        name: "Partner institutions in virtual exchange",
+                        value: "18",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-University of Cape Town Virtual Exchange in Sustainable Development",
+                    "Erasmus+ Virtual Exchange projects"
+                ],
+                vision: "'PTUK' will implement a 'Global Digital Campus' initiative to offer virtual exchange opportunities across all disciplines by 2025."
+            },
+            {
+                id: 7,
+                title: "Joint Conference/Workshop Partnerships",
+                description: "Co-organization of academic conferences, symposia, and workshops with international partners.",
+                subtypes: [
+                    {
+                        title: "Annual Conference Series",
+                        description: "Regularly recurring academic events.",
+                        example: "E.g., 'PTUK'-Stanford Annual AI Ethics Conference"
+                    },
+                    {
+                        title: "Summer/Winter Schools",
+                        description: "Intensive short-term academic programs.",
+                        example: "E.g., 'PTUK'-Heidelberg Summer School in Molecular Biology"
+                    },
+                    {
+                        title: "Doctoral Colloquia",
+                        description: "Joint platforms for PhD candidates.",
+                        example: "E.g., 'PTUK'-NUS Joint Doctoral Symposium"
+                    }
+                ],
+                frameworks: [
+                    "International Association of Universities Guidelines",
+                    "COST Action Programs",
+                    "European University Association Recommendations"
+                ],
+                kpis: [
+                    {
+                        name: "Joint conferences organized annually",
+                        value: "8",
+                        trend: "steady"
+                    },
+                    {
+                        name: "Participants in joint events",
+                        value: "1,250",
+                        trend: "up"
+                    },
+                    {
+                        name: "Publications resulting from events",
+                        value: "23",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-ETH Zurich Joint Conference on Sustainable Cities",
+                    "Global Health Summer School with Karolinska Institutet"
+                ],
+                vision: "'PTUK' will establish 3 flagship international conference series by 2026 in strategic research areas."
+            },
+            {
+                id: 8,
+                title: "Library Resource Sharing Partnerships",
+                description: "Agreements that facilitate access to library collections and digital resources across institutions.",
+                subtypes: [
+                    {
+                        title: "Consortial Agreements",
+                        description: "Shared access to electronic resources.",
+                        example: "E.g., OCLC WorldShare partnerships"
+                    },
+                    {
+                        title: "Document Delivery",
+                        description: "Interlibrary loan systems across borders.",
+                        example: "E.g., IFLA Document Delivery System"
+                    },
+                    {
+                        title: "Digital Repository Sharing",
+                        description: "Open access to institutional repositories.",
+                        example: "E.g., DARIAH EU digital humanities resources"
+                    }
+                ],
+                frameworks: [
+                    "IFLA Guidelines for International Library Collaboration",
+                    "Open Access 2020 Initiative",
+                    "COAR (Confederation of Open Access Repositories)"
+                ],
+                kpis: [
+                    {
+                        name: "Partner libraries in sharing network",
+                        value: "47",
+                        trend: "up"
+                    },
+                    {
+                        name: "Digital resources shared",
+                        value: "1.2M",
+                        trend: "up"
+                    },
+                    {
+                        name: "Interlibrary loans processed",
+                        value: "3,450",
+                        trend: "steady"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Cambridge University Library Resource Sharing",
+                    "Global South Open Library Partnership"
+                ],
+                vision: "'PTUK' will lead a consortium of 50+ universities in developing a Global Open Knowledge Network by 2027."
+            },
+            {
+                id: 9,
+                title: "Joint Publication Partnerships",
+                description: "Collaborations with international publishers and university presses to co-publish academic works.",
+                subtypes: [
+                    {
+                        title: "Academic Journal Partnerships",
+                        description: "Co-edited journals with international partners.",
+                        example: "E.g., 'PTUK'-Oxford University Press joint journal"
+                    },
+                    {
+                        title: "Book Series Partnerships",
+                        description: "Collaborative publication of book series.",
+                        example: "E.g., Springer-'PTUK' Global Studies Series"
+                    },
+                    {
+                        title: "Open Access Publishing",
+                        description: "Shared platforms for open access publishing.",
+                        example: "E.g., Knowledge Unlatched partnerships"
+                    }
+                ],
+                frameworks: [
+                    "Plan S Open Access Initiative",
+                    "UNESCO Open Science Recommendations",
+                    "cOAlition S Guidelines"
+                ],
+                kpis: [
+                    {
+                        name: "Co-published journals",
+                        value: "6",
+                        trend: "up"
+                    },
+                    {
+                        name: "Joint book publications",
+                        value: "19",
+                        trend: "up"
+                    },
+                    {
+                        name: "Open access publications",
+                        value: "1,850",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-University of Tokyo Joint Journal of Asian Studies",
+                    "Open Library of Humanities Partnership"
+                ],
+                vision: "'PTUK' will launch a multilingual open access publishing platform with 10 global partners by 2026."
+            },
+            {
+                id: 10,
+                title: "Technology Transfer Partnerships",
+                description: "Collaborations focused on commercialization of research and innovation.",
+                subtypes: [
+                    {
+                        title: "Joint Patent Development",
+                        description: "Co-ownership of intellectual property.",
+                        example: "E.g., MIT-'PTUK' Joint Patent in Biomedical Devices"
+                    },
+                    {
+                        title: "Startup Incubation",
+                        description: "Shared programs for entrepreneurial ventures.",
+                        example: "E.g., Station F-'PTUK' Startup Exchange"
+                    },
+                    {
+                        title: "Industry-Academia Partnerships",
+                        description: "Collaboration with corporations on applied research.",
+                        example: "E.g., Siemens-'PTUK' Innovation Hub"
+                    }
+                ],
+                frameworks: [
+                    "AUTM (Association of University Technology Managers) Guidelines",
+                    "European Technology Transfer Offices Circle",
+                    "WIPO University Initiative"
+                ],
+                kpis: [
+                    {
+                        name: "Joint patents filed",
+                        value: "7",
+                        trend: "up"
+                    },
+                    {
+                        name: "Startups incubated",
+                        value: "12",
+                        trend: "up"
+                    },
+                    {
+                        name: "Industry partnerships",
+                        value: "23",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-ETH Zurich Joint Innovation in Renewable Energy",
+                    "Stanford-'PTUK' Technology Transfer Program"
+                ],
+                vision: "'PTUK' will establish a Global Innovation Network with 5 leading tech transfer universities by 2025."
+            },
+            {
+                id: 11,
+                title: "Quality Assurance Partnerships",
+                description: "Collaborations to enhance and benchmark academic quality standards.",
+                subtypes: [
+                    {
+                        title: "Accreditation Partnerships",
+                        description: "Joint accreditation processes.",
+                        example: "E.g., AACSB International accreditation partnerships"
+                    },
+                    {
+                        title: "Benchmarking Consortia",
+                        description: "Collaborative quality assessment.",
+                        example: "E.g., European University Association Institutional Evaluation"
+                    },
+                    {
+                        title: "Quality Enhancement Networks",
+                        description: "Shared resources for academic quality.",
+                        example: "E.g., APQN (Asia-Pacific Quality Network)"
+                    }
+                ],
+                frameworks: [
+                    "ENQA (European Association for Quality Assurance)",
+                    "INQAAHE (International Network for Quality Assurance Agencies)",
+                    "Bologna Process Standards"
+                ],
+                kpis: [
+                    {
+                        name: "International accreditations obtained",
+                        value: "9",
+                        trend: "up"
+                    },
+                    {
+                        name: "Benchmarking partners",
+                        value: "15",
+                        trend: "steady"
+                    },
+                    {
+                        name: "Quality enhancement initiatives",
+                        value: "7",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-TUM Joint Quality Assurance in Engineering",
+                    "EQUIS Accreditation Process with EFMD"
+                ],
+                vision: "'PTUK' will achieve international accreditation in all major disciplines by 2030 through strategic partnerships."
+            },
+            {
+                id: 12,
+                title: "Alumni Network Partnerships",
+                description: "Collaborative programs with international alumni networks.",
+                subtypes: [
+                    {
+                        title: "Joint Alumni Chapters",
+                        description: "Co-hosted alumni groups in key cities.",
+                        example: "E.g., 'PTUK'-Harvard Alumni Club in Singapore"
+                    },
+                    {
+                        title: "Career Networking Platforms",
+                        description: "Shared platforms for alumni career development.",
+                        example: "E.g., 'PTUK'-Oxford Alumni Mentorship Program"
+                    },
+                    {
+                        title: "Continuing Education",
+                        description: "Joint programs for alumni lifelong learning.",
+                        example: "E.g., 'PTUK'-Stanford Alumni Executive Education"
+                    }
+                ],
+                frameworks: [
+                    "CASE (Council for Advancement and Support of Education) Standards",
+                    "Graduate Career Consortium Guidelines",
+                    "European Alumni Network Best Practices"
+                ],
+                kpis: [
+                    {
+                        name: "Joint alumni events annually",
+                        value: "14",
+                        trend: "up"
+                    },
+                    {
+                        name: "Alumni participating in joint programs",
+                        value: "1,850",
+                        trend: "up"
+                    },
+                    {
+                        name: "Cities with joint alumni chapters",
+                        value: "9",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Yale Alumni Leadership Forum",
+                    "Global Alumni Mentorship Program with University of Toronto"
+                ],
+                vision: "'PTUK' will establish a worldwide network of 20 joint alumni chapters by 2027."
+            },
+            {
+                id: 13,
+                title: "Community Engagement Partnerships",
+                description: "Collaborative programs addressing local and global societal challenges.",
+                subtypes: [
+                    {
+                        title: "Service Learning",
+                        description: "Academic programs combining learning with community service.",
+                        example: "E.g., 'PTUK'-UCLA Joint Service Learning in Public Health"
+                    },
+                    {
+                        title: "Social Entrepreneurship",
+                        description: "Programs fostering solutions to social problems.",
+                        example: "E.g., 'PTUK'-Ashoka University Social Innovation Lab"
+                    },
+                    {
+                        title: "Civic Engagement",
+                        description: "Initiatives promoting democratic participation.",
+                        example: "E.g., 'PTUK'-University of Cape Town Democracy Project"
+                    }
+                ],
+                frameworks: [
+                    "UN Sustainable Development Goals",
+                    "Talloires Network Commitments",
+                    "Global Compact on Education"
+                ],
+                kpis: [
+                    {
+                        name: "Community projects annually",
+                        value: "28",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students engaged in service learning",
+                        value: "420",
+                        trend: "up"
+                    },
+                    {
+                        name: "Social enterprises launched",
+                        value: "9",
+                        trend: "steady"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-McGill Joint Indigenous Community Program",
+                    "Global Social Entrepreneurship Challenge with NUS"
+                ],
+                vision: "'PTUK' will establish a Global Civic Engagement Network with partners on all continents by 2026."
+            },
+            {
+                id: 14,
+                title: "Digital Learning Partnerships",
+                description: "Collaborations to develop and share online learning resources and platforms.",
+                subtypes: [
+                    {
+                        title: "MOOC Partnerships",
+                        description: "Joint massive open online courses.",
+                        example: "E.g., edX consortium partnerships"
+                    },
+                    {
+                        title: "Open Educational Resources",
+                        description: "Shared digital learning materials.",
+                        example: "E.g., OER Commons university partnerships"
+                    },
+                    {
+                        title: "Learning Analytics",
+                        description: "Collaborative research on digital learning.",
+                        example: "E.g., 'PTUK'-Stanford Learning Analytics Initiative"
+                    }
+                ],
+                frameworks: [
+                    "UNESCO OER Recommendation",
+                    "European MOOC Consortium Standards",
+                    "Open Education Global Guidelines"
+                ],
+                kpis: [
+                    {
+                        name: "Joint MOOC courses",
+                        value: "11",
+                        trend: "up"
+                    },
+                    {
+                        name: "OER materials shared",
+                        value: "1,850",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students reached digitally",
+                        value: "15,300",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-MITx MicroMasters Partnership",
+                    "Global OER Network with Open University"
+                ],
+                vision: "'PTUK' will co-create a Global Digital Learning Commons with 10 partner universities by 2025."
+            },
+            {
+                id: 15,
+                title: "Cultural Exchange Partnerships",
+                description: "Programs promoting intercultural understanding through arts and humanities.",
+                subtypes: [
+                    {
+                        title: "Artist Residencies",
+                        description: "Exchange programs for creative practitioners.",
+                        example: "E.g., 'PTUK'-Royal College of Art Residency Exchange"
+                    },
+                    {
+                        title: "Joint Exhibitions",
+                        description: "Collaborative arts exhibitions.",
+                        example: "E.g., 'PTUK'-UCLA Global Arts Initiative"
+                    },
+                    {
+                        title: "Cultural Heritage Projects",
+                        description: "Preservation and study of cultural heritage.",
+                        example: "E.g., 'PTUK'-University of Bologna Cultural Heritage Program"
+                    }
+                ],
+                frameworks: [
+                    "UNESCO Cultural Diversity Convention",
+                    "European Capital of Culture Program",
+                    "ASEAN Cultural Heritage Digital Archive"
+                ],
+                kpis: [
+                    {
+                        name: "Cultural exchange programs",
+                        value: "16",
+                        trend: "steady"
+                    },
+                    {
+                        name: "Participants in arts exchanges",
+                        value: "230",
+                        trend: "up"
+                    },
+                    {
+                        name: "Joint cultural productions",
+                        value: "8",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Sorbonne Joint Theater Production",
+                    "Global Music Exchange with Berklee College"
+                ],
+                vision: "'PTUK' will establish a World Arts and Culture Network with partners from 15 countries by 2027."
+            },
+            {
+                id: 16,
+                title: "Language Learning Partnerships",
+                description: "Collaborations to enhance language acquisition and multilingual education.",
+                subtypes: [
+                    {
+                        title: "Language Center Collaborations",
+                        description: "Shared resources for language teaching.",
+                        example: "E.g., 'PTUK'-Alliance Française Partnership"
+                    },
+                    {
+                        title: "Tandem Learning",
+                        description: "Peer-to-peer language exchange programs.",
+                        example: "E.g., 'PTUK'-UNAM Spanish Exchange Program"
+                    },
+                    {
+                        title: "Heritage Language Programs",
+                        description: "Programs for diaspora language maintenance.",
+                        example: "E.g., 'PTUK'-University of Athens Greek Heritage Program"
+                    }
+                ],
+                frameworks: [
+                    "CEFR (Common European Framework of Reference for Languages)",
+                    "ACTFL (American Council on the Teaching of Foreign Languages) Standards",
+                    "UN International Decade of Indigenous Languages"
+                ],
+                kpis: [
+                    {
+                        name: "Languages offered through partnerships",
+                        value: "14",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students in language exchange",
+                        value: "180",
+                        trend: "up"
+                    },
+                    {
+                        name: "Joint language certifications",
+                        value: "5",
+                        trend: "steady"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Confucius Institute Chinese Language Program",
+                    "Global English Language Partnership with British Council"
+                ],
+                vision: "'PTUK' will offer instruction in all UN official languages through partnerships by 2030."
+            },
+            {
+                id: 17,
+                title: "Sustainability Partnerships",
+                description: "Collaborations focused on environmental sustainability and climate action.",
+                subtypes: [
+                    {
+                        title: "Green Campus Initiatives",
+                        description: "Joint sustainability projects on campuses.",
+                        example: "E.g., 'PTUK'-UBC Green Campus Partnership"
+                    },
+                    {
+                        title: "Climate Research",
+                        description: "Collaborative environmental research.",
+                        example: "E.g., 'PTUK'-Potsdam Institute Climate Research"
+                    },
+                    {
+                        title: "Sustainability Education",
+                        description: "Joint programs on sustainable development.",
+                        example: "E.g., 'PTUK'-Stockholm Resilience Centre Program"
+                    }
+                ],
+                frameworks: [
+                    "UN Sustainable Development Goals",
+                    "ISCN (International Sustainable Campus Network)",
+                    "COP26 Universities Climate Commitment"
+                ],
+                kpis: [
+                    {
+                        name: "Sustainability projects",
+                        value: "22",
+                        trend: "up"
+                    },
+                    {
+                        name: "Carbon reduction achieved",
+                        value: "35%",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students in sustainability programs",
+                        value: "560",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-ETH Zurich Zero Carbon Campus Initiative",
+                    "Global Sustainability Network with Lund University"
+                ],
+                vision: "'PTUK' will achieve carbon neutrality by 2030 through international sustainability partnerships."
+            },
+            {
+                id: 18,
+                title: "Health Sciences Partnerships",
+                description: "Collaborations in medical education, research, and clinical practice.",
+                subtypes: [
+                    {
+                        title: "Joint Medical Programs",
+                        description: "Collaborative medical education.",
+                        example: "E.g., 'PTUK'-Karolinska Institutet Medical Exchange"
+                    },
+                    {
+                        title: "Global Health Initiatives",
+                        description: "Addressing worldwide health challenges.",
+                        example: "E.g., 'PTUK'-Johns Hopkins Global Health Program"
+                    },
+                    {
+                        title: "Clinical Training Exchanges",
+                        description: "Shared clinical training opportunities.",
+                        example: "E.g., 'PTUK'-Mayo Clinic Medical Training Partnership"
+                    }
+                ],
+                frameworks: [
+                    "WHO Guidelines for Medical Education",
+                    "WFME (World Federation for Medical Education) Standards",
+                    "Global Health Security Agenda"
+                ],
+                kpis: [
+                    {
+                        name: "Joint medical research projects",
+                        value: "17",
+                        trend: "up"
+                    },
+                    {
+                        name: "Clinical exchange participants",
+                        value: "48",
+                        trend: "up"
+                    },
+                    {
+                        name: "Global health initiatives",
+                        value: "9",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Harvard Medical School Global Health Partnership",
+                    "European Medical Education Network"
+                ],
+                vision: "'PTUK' will establish a Global Health Education Consortium with 10 leading medical schools by 2026."
+            },
+            {
+                id: 19,
+                title: "Entrepreneurship Partnerships",
+                description: "Collaborations to foster innovation and business creation.",
+                subtypes: [
+                    {
+                        title: "Startup Accelerators",
+                        description: "Joint programs for entrepreneurial ventures.",
+                        example: "E.g., 'PTUK'-Stanford StartX Partnership"
+                    },
+                    {
+                        title: "Innovation Hubs",
+                        description: "Shared spaces for creative collaboration.",
+                        example: "E.g., 'PTUK'-ETH Zurich Innovation Lab"
+                    },
+                    {
+                        title: "Entrepreneurship Education",
+                        description: "Joint programs in entrepreneurial studies.",
+                        example: "E.g., 'PTUK'-Babson College Entrepreneurship Program"
+                    }
+                ],
+                frameworks: [
+                    "Global Entrepreneurship Monitor",
+                    "European Institute of Innovation and Technology",
+                    "UNCTAD Empretec Program"
+                ],
+                kpis: [
+                    {
+                        name: "Startups launched",
+                        value: "34",
+                        trend: "up"
+                    },
+                    {
+                        name: "Entrepreneurship courses",
+                        value: "12",
+                        trend: "up"
+                    },
+                    {
+                        name: "Investment raised",
+                        value: "$4.7M",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-MIT Regional Entrepreneurship Acceleration Program",
+                    "Global Startup Exchange with NUS Enterprise"
+                ],
+                vision: "'PTUK' will create an International Entrepreneurship Network supporting 100+ startups annually by 2028."
+            },
+            {
+                id: 20,
+                title: "Policy Research Partnerships",
+                description: "Collaborations with think tanks and policy institutes to inform decision-making.",
+                subtypes: [
+                    {
+                        title: "Think Tank Collaborations",
+                        description: "Joint policy research initiatives.",
+                        example: "E.g., 'PTUK'-Brookings Institution Partnership"
+                    },
+                    {
+                        title: "Government Advisory",
+                        description: "Providing expert advice to policymakers.",
+                        example: "E.g., 'PTUK'-World Bank Policy Research Program"
+                    },
+                    {
+                        title: "Public Policy Programs",
+                        description: "Joint education in policy studies.",
+                        example: "E.g., 'PTUK'-LSE Public Policy Initiative"
+                    }
+                ],
+                frameworks: [
+                    "OECD Guidelines for Policy Research",
+                    "UN Policy Coordination Mechanisms",
+                    "Think Tank Initiative Standards"
+                ],
+                kpis: [
+                    {
+                        name: "Policy research projects",
+                        value: "19",
+                        trend: "up"
+                    },
+                    {
+                        name: "Policy briefs published",
+                        value: "47",
+                        trend: "up"
+                    },
+                    {
+                        name: "Government adoptions",
+                        value: "12",
+                        trend: "steady"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Chatham House Global Governance Program",
+                    "European Policy Research Network"
+                ],
+                vision: "'PTUK' will establish itself as a global hub for policy research through strategic partnerships by 2027."
+            },
+            {
+                id: 21,
+                title: "Disaster Resilience Partnerships",
+                description: "Collaborations to prepare for and respond to natural and man-made disasters.",
+                subtypes: [
+                    {
+                        title: "Risk Reduction Programs",
+                        description: "Joint initiatives to mitigate disaster risks.",
+                        example: "E.g., 'PTUK'-Tohoku University Disaster Preparedness Program"
+                    },
+                    {
+                        title: "Humanitarian Response",
+                        description: "Collaborative disaster response efforts.",
+                        example: "E.g., 'PTUK'-Red Cross Humanitarian Partnership"
+                    },
+                    {
+                        title: "Resilience Research",
+                        description: "Joint research on community resilience.",
+                        example: "E.g., 'PTUK'-UC Berkeley Resilience Center"
+                    }
+                ],
+                frameworks: [
+                    "Sendai Framework for Disaster Risk Reduction",
+                    "UN Office for Disaster Risk Reduction",
+                    "International Federation of Red Cross Standards"
+                ],
+                kpis: [
+                    {
+                        name: "Disaster preparedness programs",
+                        value: "8",
+                        trend: "up"
+                    },
+                    {
+                        name: "Communities served",
+                        value: "24",
+                        trend: "up"
+                    },
+                    {
+                        name: "Research publications",
+                        value: "32",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-University of Copenhagen Climate Adaptation Program",
+                    "Global Resilience Network with University College London"
+                ],
+                vision: "'PTUK' will develop a Global Resilience Hub with partners from disaster-prone regions by 2026."
+            },
+            {
+                id: 22,
+                title: "Indigenous Knowledge Partnerships",
+                description: "Collaborations to preserve and integrate indigenous knowledge systems.",
+                subtypes: [
+                    {
+                        title: "Indigenous Studies Programs",
+                        description: "Joint academic programs.",
+                        example: "E.g., 'PTUK'-University of Hawai'i Indigenous Knowledge Program"
+                    },
+                    {
+                        title: "Community-Based Research",
+                        description: "Collaborative research with indigenous communities.",
+                        example: "E.g., 'PTUK'-University of Alaska Native Studies Partnership"
+                    },
+                    {
+                        title: "Cultural Preservation",
+                        description: "Documenting and protecting indigenous heritage.",
+                        example: "E.g., 'PTUK'-University of Otago Maori Knowledge Initiative"
+                    }
+                ],
+                frameworks: [
+                    "UN Declaration on the Rights of Indigenous Peoples",
+                    "World Intellectual Property Organization Traditional Knowledge Policy",
+                    "UNESCO Intangible Cultural Heritage Convention"
+                ],
+                kpis: [
+                    {
+                        name: "Indigenous knowledge programs",
+                        value: "6",
+                        trend: "up"
+                    },
+                    {
+                        name: "Community partnerships",
+                        value: "14",
+                        trend: "up"
+                    },
+                    {
+                        name: "Traditional knowledge documented",
+                        value: "850+",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-University of British Columbia Indigenous Research Partnership",
+                    "Global Indigenous Knowledge Network"
+                ],
+                vision: "'PTUK' will become a global leader in indigenous knowledge preservation through partnerships by 2028."
+            },
+            {
+                id: 23,
+                title: "Space Research Partnerships",
+                description: "Collaborations in aerospace research and exploration.",
+                subtypes: [
+                    {
+                        title: "Satellite Programs",
+                        description: "Joint satellite development and operation.",
+                        example: "E.g., 'PTUK'-Caltech Space Science Initiative"
+                    },
+                    {
+                        title: "Astronomy Collaborations",
+                        description: "Shared telescope facilities and research.",
+                        example: "E.g., 'PTUK'-University of Tokyo Astronomy Program"
+                    },
+                    {
+                        title: "Space Technology",
+                        description: "Joint development of aerospace technologies.",
+                        example: "E.g., 'PTUK'-MIT Space Technology Lab"
+                    }
+                ],
+                frameworks: [
+                    "UN Office for Outer Space Affairs",
+                    "International Astronautical Federation",
+                    "European Space Agency Academic Partnerships"
+                ],
+                kpis: [
+                    {
+                        name: "Space research projects",
+                        value: "11",
+                        trend: "up"
+                    },
+                    {
+                        name: "Satellites launched",
+                        value: "2",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students in space programs",
+                        value: "87",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Stanford CubeSat Development Program",
+                    "International Space University Partnership"
+                ],
+                vision: "'PTUK' will establish a Space Research Consortium with leading aerospace universities by 2027."
+            },
+            {
+                id: 24,
+                title: "Oceanography Partnerships",
+                description: "Collaborations in marine science and conservation.",
+                subtypes: [
+                    {
+                        title: "Marine Research Expeditions",
+                        description: "Joint oceanographic research voyages.",
+                        example: "E.g., 'PTUK'-Woods Hole Oceanographic Institution Partnership"
+                    },
+                    {
+                        title: "Coastal Conservation",
+                        description: "Collaborative coastal ecosystem protection.",
+                        example: "E.g., 'PTUK'-University of Queensland Marine Conservation Program"
+                    },
+                    {
+                        title: "Blue Economy",
+                        description: "Sustainable ocean resource development.",
+                        example: "E.g., 'PTUK'-University of Bergen Blue Growth Initiative"
+                    }
+                ],
+                frameworks: [
+                    "UN Decade of Ocean Science",
+                    "UN Sustainable Development Goal 14",
+                    "International Oceanographic Commission"
+                ],
+                kpis: [
+                    {
+                        name: "Marine research projects",
+                        value: "9",
+                        trend: "up"
+                    },
+                    {
+                        name: "Ocean area studied",
+                        value: "1.2M km²",
+                        trend: "up"
+                    },
+                    {
+                        name: "Conservation initiatives",
+                        value: "7",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Scripps Institution of Oceanography Partnership",
+                    "Global Ocean Observing System Collaboration"
+                ],
+                vision: "'PTUK' will lead a Global Ocean Research Network with partners from coastal nations by 2028."
+            },
+            {
+                id: 25,
+                title: "Artificial Intelligence Partnerships",
+                description: "Collaborations in AI research, ethics, and applications.",
+                subtypes: [
+                    {
+                        title: "AI Research Labs",
+                        description: "Joint AI research facilities.",
+                        example: "E.g., 'PTUK'-MILA (Montreal Institute for Learning Algorithms) Partnership"
+                    },
+                    {
+                        title: "Ethics Initiatives",
+                        description: "Collaborative AI ethics frameworks.",
+                        example: "E.g., 'PTUK'-University of Cambridge AI Ethics Program"
+                    },
+                    {
+                        title: "Industry Applications",
+                        description: "AI solutions for real-world problems.",
+                        example: "E.g., 'PTUK'-DeepMind Research Collaboration"
+                    }
+                ],
+                frameworks: [
+                    "OECD Principles on AI",
+                    "UNESCO AI Ethics Recommendations",
+                    "EU AI Act Guidelines"
+                ],
+                kpis: [
+                    {
+                        name: "AI research projects",
+                        value: "15",
+                        trend: "up"
+                    },
+                    {
+                        name: "Patents in AI",
+                        value: "8",
+                        trend: "up"
+                    },
+                    {
+                        name: "AI ethics publications",
+                        value: "23",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-ETH Zurich AI for Social Good Initiative",
+                    "Global AI Ethics Network with Stanford"
+                ],
+                vision: "'PTUK' will establish an International AI Research Institute with 10 global partners by 2026."
+            },
+            {
+                id: 26,
+                title: "Sports Science Partnerships",
+                description: "Collaborations in athletic performance and sports medicine.",
+                subtypes: [
+                    {
+                        title: "Athlete Performance",
+                        description: "Joint athlete training and research.",
+                        example: "E.g., 'PTUK'-Australian Institute of Sport Partnership"
+                    },
+                    {
+                        title: "Sports Medicine",
+                        description: "Collaborative injury prevention research.",
+                        example: "E.g., 'PTUK'-Mayo Clinic Sports Medicine Program"
+                    },
+                    {
+                        title: "E-Sports",
+                        description: "Research on competitive gaming.",
+                        example: "E.g., 'PTUK'-University of California E-Sports Initiative"
+                    }
+                ],
+                frameworks: [
+                    "International Olympic Committee Research",
+                    "World Health Organization Physical Activity Guidelines",
+                    "International Sports Science Association Standards"
+                ],
+                kpis: [
+                    {
+                        name: "Sports research projects",
+                        value: "7",
+                        trend: "up"
+                    },
+                    {
+                        name: "Athletes studied",
+                        value: "320",
+                        trend: "up"
+                    },
+                    {
+                        name: "Performance improvements",
+                        value: "18%",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-Loughborough University High Performance Sports Partnership",
+                    "Global E-Sports Research Network"
+                ],
+                vision: "'PTUK' will become a global hub for sports science research through international partnerships by 2027."
+            },
+            {
+                id: 27,
+                title: "Global Governance Partnerships",
+                description: "Collaborations with international organizations on global governance issues.",
+                subtypes: [
+                    {
+                        title: "UN Agency Collaborations",
+                        description: "Partnerships with United Nations bodies.",
+                        example: "E.g., 'PTUK'-UNDP Sustainable Development Partnership"
+                    },
+                    {
+                        title: "Diplomatic Training",
+                        description: "Programs for future global leaders.",
+                        example: "E.g., 'PTUK'-Fletcher School Diplomatic Training Initiative"
+                    },
+                    {
+                        title: "Global Policy Forums",
+                        description: "Joint conferences on governance challenges.",
+                        example: "E.g., 'PTUK'-World Economic Forum University Network"
+                    }
+                ],
+                frameworks: [
+                    "UN Academic Impact Initiative",
+                    "Sustainable Development Goals",
+                    "Paris Agreement on Climate Change"
+                ],
+                kpis: [
+                    {
+                        name: "UN partnerships",
+                        value: "6",
+                        trend: "up"
+                    },
+                    {
+                        name: "Policy forums organized",
+                        value: "9",
+                        trend: "up"
+                    },
+                    {
+                        name: "Students in global governance",
+                        value: "145",
+                        trend: "up"
+                    }
+                ],
+                caseStudies: [
+                    "'PTUK'-United Nations University Joint Program",
+                    "Global Governance Network with Sciences Po"
+                ],
+                vision: "'PTUK' will establish itself as a leading academic partner for global governance institutions by 2028."
+            }
+        ];
+
+        // DOM elements
+        const categoryList = document.getElementById('categoryList');
+        const categoryDetailsContainer = document.getElementById('categoryDetailsContainer');
+        const dashboardOverview = document.getElementById('dashboardOverview');
+        const searchBox = document.querySelector('.search-box');
+        const viewButtons = document.querySelectorAll('.view-btn');
+
+        // Initialize the dashboard
+        function initDashboard() {
+            // Populate category list
+            partnershipCategories.forEach(category => {
+                const listItem = document.createElement('li');
+                listItem.className = 'category-item';
+                listItem.innerHTML = `
+                    <div class="category-icon">${category.id}</div>
+                    <span>${category.title}</span>
+                `;
+                listItem.addEventListener('click', () => showCategoryDetails(category.id));
+                categoryList.appendChild(listItem);
+            });
+
+            // Set first category as active by default
+            if (partnershipCategories.length > 0) {
+                document.querySelector('.category-item').classList.add('active');
+            }
+
+            // Set up search functionality
+            searchBox.addEventListener('input', filterCategories);
+
+            // Set up view toggle buttons
+            viewButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    viewButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    // Here you would add logic to switch between views
+                });
+            });
+        }
+
+        // Show details for a specific category
+        function showCategoryDetails(categoryId) {
+            // Hide dashboard overview
+            dashboardOverview.classList.remove('active');
+            
+            // Remove active class from all category items
+            document.querySelectorAll('.category-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to selected category
+            document.querySelectorAll('.category-item')[categoryId - 1].classList.add('active');
+            
+            // Find the selected category
+            const category = partnershipCategories.find(cat => cat.id === categoryId);
+            
+            // Create HTML for category details
+            const categoryHTML = `
+                <div class="category-details active">
+                    <div class="category-header">
+                        <h2 class="category-title">${category.title}</h2>
+                        <p class="category-description">${category.description}</p>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-tab="subtypes">Subtypes</div>
+                        <div class="tab" data-tab="frameworks">Frameworks</div>
+                        <div class="tab" data-tab="kpis">KPIs</div>
+                        <div class="tab" data-tab="case-studies">Case Studies</div>
+                        <div class="tab" data-tab="vision">Future Vision</div>
+                    </div>
+                    
+                    <div class="tab-content active" id="subtypes">
+                        <div class="subtypes-section">
+                            <h3>Subtypes and Examples</h3>
+                            ${category.subtypes.map(subtype => `
+                                <div class="subtype-item">
+                                    <div class="subtype-title">${subtype.title}</div>
+                                    <div class="subtype-description">${subtype.description}</div>
+                                    <div class="example"><strong>Example:</strong> ${subtype.example}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="frameworks">
+                        <div class="frameworks-section">
+                            <h3>Alignment with Global Frameworks</h3>
+                            ${category.frameworks.map(framework => `
+                                <div class="framework-item">
+                                    <div class="framework-title">${framework}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="kpis">
+                        <div class="kpis-section">
+                            <h3>Key Performance Indicators</h3>
+                            ${category.kpis.map(kpi => `
+                                <div class="kpi-item">
+                                    <div class="kpi-title">${kpi.name}</div>
+                                    <div class="kpi-metrics">
+                                        <div class="kpi-metric">
+                                            <div class="kpi-value">${kpi.value}</div>
+                                            <div class="kpi-label">Current Value</div>
+                                        </div>
+                                        <div class="kpi-metric">
+                                            <div class="kpi-value" style="color: ${kpi.trend === 'up' ? 'var(--success-color)' : kpi.trend === 'down' ? 'var(--secondary-color)' : 'var(--warning-color)'}">
+                                                ${kpi.trend === 'up' ? '↑' : kpi.trend === 'down' ? '↓' : '→'}
+                                            </div>
+                                            <div class="kpi-label">Trend</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="case-studies">
+                        <div class="case-studies-section">
+                            <h3>Case Studies</h3>
+                            ${category.caseStudies.map(study => `
+                                <div class="case-study-item">
+                                    <div class="case-study-title">${study}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="vision">
+                        <div class="vision-section">
+                            <h3>'PTUK''s Future Vision</h3>
+                            <div class="vision-text">
+                                ${category.vision}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Update the DOM
+            categoryDetailsContainer.innerHTML = categoryHTML;
+            
+            // Set up tab switching
+            setupTabs();
+        }
+
+        // Set up tab switching functionality
+        function setupTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs and tab contents
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    tab.classList.add('active');
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        }
+
+        // Filter categories based on search input
+        function filterCategories() {
+            const searchTerm = searchBox.value.toLowerCase();
+            const categoryItems = document.querySelectorAll('.category-item');
+            
+            categoryItems.forEach((item, index) => {
+                const categoryTitle = partnershipCategories[index].title.toLowerCase();
+                if (categoryTitle.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize the dashboard when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>
